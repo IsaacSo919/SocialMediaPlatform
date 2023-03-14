@@ -1,5 +1,6 @@
 package socialmedia;
 
+import javax.print.attribute.HashAttributeSet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,30 +142,34 @@ public class SocialMedia implements SocialMediaPlatform {
         }
         // Create a post object using string message parameter, then assign unique ID to post and set likes, endorsement ect to default 0
         int postId = totalPostCount + 1;
-        Post post = new Post(0, message, postId, 0, 0);
+        Post post = new Post(message,handle,postId,0,0);
         totalPostCount++;
 
 
         this.posts.add(post);
-
+//
         account.getPosts().add(post); // one account can have many post
         return postId;
     }
 
 
-    // What the hell is the endorsed post
 
     @Override
     public int endorsePost(String handle, int post_id) throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException {
         // Find post corresponding to the post id passed in as a parameter.
         // Loop through all posts to find matching one
-        Post endorsedpost = null;
+        Post post_to_be_endorsed = null;
         for (Post p : posts) {
+            System.out.println("create post function:" + p.getPost_id());
             if (p.getPost_id() == post_id) {
-                endorsedpost = p;
+                post_to_be_endorsed = p;
                 break;
             }
         }
+        if (post_to_be_endorsed == null){
+            throw new PostIDNotRecognisedException("This ID has not been recognised");
+        }
+
 
         // Find endorsers account String handle
         Account endorsersaccount = null;
@@ -180,18 +185,18 @@ public class SocialMedia implements SocialMediaPlatform {
 
         }
 
-//        String endorsed_message = endorsedpost.getPost_message();
-//        String endorsed_handle = endorsedpost.;
-//        String message = "EP@" + endorsed_handle + ":" + endorsed_message;
 
         // Create a new post
         int newPostId = totalPostCount + 1;
         totalPostCount++;
-        String message = "EP@ " + handle + endorsedpost.getPost_message();
+        /* <p>
+	 * <code>"EP@" + [endorsed account handle] + ": " + [endorsed message]</code>
+	 /* <p>*/
+        String message = "EP@ " + handle+ ": " + post_to_be_endorsed.getPost_message();
         EndorsementPost endorsementPost = new EndorsementPost(newPostId, handle, post_id, message);
 
         //Social media and account should store the new post
-        this.posts.add(endorsedpost);
+        this.posts.add(endorsementPost);
         endorsersaccount.getPosts().add(endorsementPost);
 
         return newPostId;
@@ -199,7 +204,46 @@ public class SocialMedia implements SocialMediaPlatform {
 
     @Override
     public int commentPost(String handle, int id, String message) throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException, InvalidPostException {
-        return 0;
+        // Find account with matching handle passed in as a parameter
+        Account account = null;
+        for(Account acc :accounts){
+            if(acc.getHandle().equals(handle)){
+                account = acc;
+            }
+        }
+        // Handle exceptions
+        if(account.getHandle() == null){
+            throw new HandleNotRecognisedException("This handle does not exist!");
+        }
+        // Loop through all posts and find matching id
+        Post post = null;
+        for(Post findid: posts){
+            if(findid.getPost_id() == id){
+                post = findid;
+            }
+        }
+        // Handle post exceptions
+        // If post ID does not exist
+        if(post == null){
+            throw new PostIDNotRecognisedException("This post ID does not exist!");
+        }
+        // If post message is invalid
+        if(post.getPost_message() == " " || post.getPost_message().length() > 100){
+            throw new InvalidPostException("This is not a valid post message");
+        }
+        // Non actionable?
+        // Create post object for account that is commenting
+        // Assign new post id
+        int new_Post_id  = totalPostCount +1;
+        totalPostCount++;
+        // Create new commentPost object
+        CommentPost commentPost = new CommentPost(message,handle,new_Post_id,0,0,id);
+        this.posts.add(commentPost);
+        return new_Post_id;
+
+
+
+
     }
 
     @Override

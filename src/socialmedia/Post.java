@@ -3,11 +3,11 @@ package socialmedia;
 public class Post{
 
     private String account_handle;
-    private int post_count;
+    //private int post_count;
     private String post_message;
     private int post_id;
     private int likes;
-
+    private int no_of_post_endorsements;
     public Post(){
 
     }
@@ -20,29 +20,36 @@ public class Post{
         this.account_handle = account_handle;
     }
 
-    public int getPost_count() {
-        return post_count;
-    }
+//    public int getPost_count() {
+//        return post_count;
+//    }
 
-    public void increment_post_count(){
-        post_count++;
-    }
-
-
+//    public void increment_post_count(){
+//        post_count++;
+//    }
 
 
-    public Post(int post_count, String post_message,int post_id,int likes,int post_endorsements){
-        this.post_count = post_count;
+    public Post(String post_message,String account_handle, int post_id, int likes, int no_of_post_endorsements ){
         this.post_message = post_message;
+        this.account_handle = account_handle;
         this.post_id = post_id;
         this.likes = likes;
-
-
+        this.no_of_post_endorsements = no_of_post_endorsements;
 
     }
-    public void incrementpost_count(){
-        post_count++;
-    }
+
+//    public Post(int post_count, String post_message,int post_id,int likes,int post_endorsements){
+//        this.post_count = post_count;
+//        this.post_message = post_message;
+//        this.post_id = post_id;
+//        this.likes = likes;
+//
+//
+//
+//    }
+//    public void incrementpost_count(){
+//        post_count++;
+//    }
 
     public Post(int post_id, String message,int accountId){
         this.setPost_id(getPost_id());
@@ -56,12 +63,15 @@ public class Post{
         return post_message;
     }
 
-    public void setPost_count(int post_count) {
-        this.post_count = post_count;
-    }
+//    public void setPost_count(int post_count) {
+//        this.post_count = post_count;
+//    }
 
     public void setPost_message(String post_message) {
-        post_message = "";
+        this.post_message = post_message;
+    }
+    public void setNo_of_post_endorsements(int no_of_post_endorsements){
+        this.no_of_post_endorsements = no_of_post_endorsements;
     }
 
     public int getPost_id() {

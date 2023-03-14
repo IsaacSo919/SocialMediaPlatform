@@ -95,7 +95,7 @@ public class Account {
             posts = new ArrayList<>();
         }
         posts.add(post);
-        post.incrementpost_count();
+//        post.incrementpost_count();
 
     }
 
