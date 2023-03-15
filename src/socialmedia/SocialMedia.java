@@ -248,6 +248,21 @@ public class SocialMedia implements SocialMediaPlatform {
 
     @Override
     public void deletePost(int id) throws PostIDNotRecognisedException {
+        Post post = null;
+        for(Post post1: posts){
+            if(post1.getPost_id() == id){
+                post = post1;
+            }
+        }
+        // Handle post exceptions
+        // If post ID does not exist
+        if(post == null){
+            throw new PostIDNotRecognisedException("This post ID does not exist!");
+        }
+        // Search for post with the matching post id, and replace with post is deleted message
+
+
+
 
     }
 

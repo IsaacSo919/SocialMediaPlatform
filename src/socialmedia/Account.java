@@ -11,6 +11,7 @@ public class Account {
     private String description;
 
     private int endorsements;
+    private int no_of_comments;
 
     private List<Post> posts;
 
@@ -20,7 +21,9 @@ public class Account {
         endorsements++;
     }
 
-
+    public void setNo_of_comments(int no_of_comments) {
+        this.no_of_comments = no_of_comments;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -36,7 +39,6 @@ public class Account {
         super();
         this.handle = handle;
         this.endorsements = endorsements;
-        this.likes = 0;
         this.posts = new ArrayList<Post>();// Initalise arraylist
         this.description = description;
         this.id = ++count;
