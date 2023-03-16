@@ -33,44 +33,12 @@ public class SocialMediaPlatformTestApp {
 		try {
 			id = platform.createAccount("my_handle");
 			id = platform.createAccount("my_handle_2");
+
 			postID =platform.createPost("my_handle","POST 1 for handle: my_handle");
 			int postID2 = platform.createPost("my_handle","POST 2 for handle: my_handle"); ;
-			//System.out.println("the post id of the first post, real post:"+postID);
 			int endorsedId = platform.endorsePost("my_handle_2",postID);
-
 			int commentpostID = platform.commentPost("my_handle_2", postID, "OOPPPPPP");
-			for (Post post : ((SocialMedia) platform).posts){
-				if (post.getPost_id() == commentpostID){
-					System.out.println("comment_post ID:" + post.getPost_id());
-					System.out.println("post message: "+post.getPost_message());
-					System.out.println("account handle: "+post.getAccount_handle());
-					int parentpostid = ((CommentPost) post).getParentpostid();
-					System.out.println("parentpostid: "+ parentpostid);
-
-					/* printing the list of post of an account*/
-
-//					System.out.println(platform.showAccount());
-					break;
-				}
-			}
-
-
-//			System.out.println("endosedID:"+endorsedId);
-//			for (Post post : ((SocialMedia) platform).posts){
-//				if (post.getPost_id() == endorsedId){
-//					System.out.println("post_id that equals endorsed ID:" + post.getPost_id());
-//					System.out.println("post message: "+post.getPost_message());
-//					System.out.println("account handle: "+post.getAccount_handle());
-//					int endormentId = ((EndorsementPost) post).getEndorsement_post_id();
-//					System.out.println("endorsmentId: "+ endormentId);
-//				}
-//			}
-//			int commented_post_id = platform.commentPost("my_handle_2",postID,"abcdefg");
-//			System.out.println("commented_post_id:" + commented_post_id);
-//			for (Post post : ((SocialMedia) platform).posts){
-//
-//			}
-
+			platform.deletePost(postID);
 
 
 			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";

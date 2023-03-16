@@ -1,5 +1,8 @@
 package socialmedia;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Post{
 
     private String account_handle;
@@ -8,6 +11,12 @@ public class Post{
     private int post_id;
     private int likes;
     private int no_of_post_endorsements;
+    private int No_of_comments_of_this_post;
+    private List<CommentPost> CommentPosts_of_that_Post = new ArrayList();
+    private List<EndorsementPost> endorsementPosts_of_that_Post;
+
+
+
     public Post(){
 
     }
@@ -89,6 +98,30 @@ public class Post{
     public void setLikes(int likes) {
         this.likes = likes;
     }
+    public void addCommentPostinPostList(CommentPost commentPost){
+        CommentPosts_of_that_Post.add(commentPost);
+        No_of_comments_of_this_post++;
+    }
+    public List<CommentPost> getCommentPosts() {
+        return CommentPosts_of_that_Post;
+    }
+    public int no_of_comment_posts_of_this_post(){
+        return CommentPosts_of_that_Post.size();
+    }
 
 
+    public void addEndorsementPost(EndorsementPost endorsementPost){
+        endorsementPosts_of_that_Post.add(endorsementPost);
+        no_of_post_endorsements++;
+    }
+
+
+
+    public List<EndorsementPost> getEndorsementPosts() {
+        return endorsementPosts_of_that_Post;
+    }
 }
+
+
+
+

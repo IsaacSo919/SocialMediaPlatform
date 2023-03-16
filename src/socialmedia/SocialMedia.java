@@ -1,6 +1,5 @@
 package socialmedia;
 
-import javax.print.attribute.HashAttributeSet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,8 @@ import java.util.List;
 public class SocialMedia implements SocialMediaPlatform {
     // ArrayList to store account details.
     public List<Account> accounts = new ArrayList<>();
-    public List<Post> posts = new ArrayList<>(); // remove static
+    public List<Post> posts_list = new ArrayList<>(); // remove static
+
     public int totalPostCount = 0;
 
     public List<Account> getAccounts() {
@@ -146,7 +146,7 @@ public class SocialMedia implements SocialMediaPlatform {
         totalPostCount++;
 
 
-        this.posts.add(post);
+        this.posts_list.add(post);
 //
         account.getPosts().add(post); // one account can have many post
         return postId;
@@ -159,8 +159,8 @@ public class SocialMedia implements SocialMediaPlatform {
         // Find post corresponding to the post id passed in as a parameter.
         // Loop through all posts to find matching one
         Post post_to_be_endorsed = null;
-        for (Post p : posts) {
-            System.out.println("create post function:" + p.getPost_id());
+        for (Post p : posts_list) {
+
             if (p.getPost_id() == post_id) {
                 post_to_be_endorsed = p;
                 break;
@@ -196,7 +196,7 @@ public class SocialMedia implements SocialMediaPlatform {
         EndorsementPost endorsementPost = new EndorsementPost(newPostId, handle, post_id, message);
 
         //Social media and account should store the new post
-        this.posts.add(endorsementPost);
+        this.posts_list.add(endorsementPost);
         endorsersaccount.getPosts().add(endorsementPost);
 
         return newPostId;
@@ -217,7 +217,7 @@ public class SocialMedia implements SocialMediaPlatform {
         }
         // Loop through all posts and find matching id
         Post post = null;
-        for(Post findid: posts){
+        for(Post findid: posts_list){
             if(findid.getPost_id() == id){
                 post = findid;
             }
@@ -238,7 +238,9 @@ public class SocialMedia implements SocialMediaPlatform {
         totalPostCount++;
         // Create new commentPost object
         CommentPost commentPost = new CommentPost(message,handle,new_Post_id,0,0,id);
-        this.posts.add(commentPost);
+        this.posts_list.add(commentPost);
+        post.addCommentPostinPostList(commentPost);
+
         return new_Post_id;
 
 
@@ -249,9 +251,9 @@ public class SocialMedia implements SocialMediaPlatform {
     @Override
     public void deletePost(int id) throws PostIDNotRecognisedException {
         Post post = null;
-        for(Post post1: posts){
+        for(Post post1: posts_list){
             if(post1.getPost_id() == id){
-                post = post1;
+                post = post1; //the post is set
             }
         }
         // Handle post exceptions
@@ -259,6 +261,10 @@ public class SocialMedia implements SocialMediaPlatform {
         if(post == null){
             throw new PostIDNotRecognisedException("This post ID does not exist!");
         }
+
+
+
+
         // Search for post with the matching post id, and replace with post is deleted message
 
 
