@@ -13,7 +13,9 @@ public class Account {
     private int endorsements;
     private int no_of_comments;
 
-    private List<Post> posts;
+
+    private List<Integer> list_of_postIDs_in_this_account = new ArrayList<>();
+
 
 
 
@@ -25,21 +27,18 @@ public class Account {
         this.no_of_comments = no_of_comments;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public  List<Post> getPosts() {
-        if(posts == null){
+    public  List<Integer> getListOfPostIDsInThisAccount() {
+        if(list_of_postIDs_in_this_account == null){
             return new ArrayList<>();
         }
-        return posts;
+        return list_of_postIDs_in_this_account;
     }
     public Account(String handle, int endorsements, String description) {
         super();
         this.handle = handle;
         this.endorsements = endorsements;
-        this.posts = new ArrayList<Post>();// Initalise arraylist
+        this.list_of_postIDs_in_this_account = new ArrayList<Integer>();// Initalise arraylist
         this.description = description;
         this.id = ++count;
     }
@@ -54,7 +53,7 @@ public class Account {
         return this.id;
     }
     public int getPost_count() {
-        return this.getPosts().size();
+        return this.getListOfPostIDsInThisAccount().size();
     }
 
     public String getHandle() {
@@ -84,21 +83,36 @@ public class Account {
     public int getEndorsements() {
         return endorsements;
     }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setEndorsements(int endorsements) {
         this.endorsements = endorsements;
     }
 
-    public void setPosts(List<Post> posts){
-        this.posts = posts;
+    public void setList_of_postIDs_in_this_account(List<Integer> list_of_postIDs_in_this_account){
+        this.list_of_postIDs_in_this_account = list_of_postIDs_in_this_account;
     }
-    public void addPost(Post post){
-        if(posts == null){
-            posts = new ArrayList<>();
-        }
-        posts.add(post);
+
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public void addPost(int postid){
+        list_of_postIDs_in_this_account.add(postid);
 //        post.incrementpost_count();
 
     }
+    public void deletepostid(int id){
+        for (Integer id_in_list: list_of_postIDs_in_this_account)
+            if (id_in_list==id){
+                list_of_postIDs_in_this_account.remove(id_in_list);
+
+            }
+    }
+
+
 
 }

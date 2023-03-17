@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * BadMiniSocialMedia is a minimally compiling, but non-functioning implementor
  * of the MiniSocialMediaPlatform interface.
- *
+ *+
  * @author Diogo Pacheco
  * @version 1.0
  */
@@ -110,7 +110,7 @@ public class SocialMedia implements SocialMediaPlatform {
         }
         int totalPostCount = accounttoshow.getPost_count();
         int totalEndorsements = 0;
-        for (Post post : accounttoshow.getPosts()) {
+        for (Integer post : accounttoshow.getListOfPostIDsInThisAccount()) {
             totalEndorsements += accounttoshow.getEndorsements();
         }
 
@@ -120,6 +120,7 @@ public class SocialMedia implements SocialMediaPlatform {
         sb.append("ID: ").append(accounttoshow.getId()).append("\n");
         sb.append("Handle: ").append(accounttoshow.getHandle()).append("\n");
         sb.append("Description: ").append(accounttoshow.getDescription()).append("\n");
+        sb.append("Likes:").append(accounttoshow.getLikes()).append("\n");
         sb.append("Endorse count: ").append(accounttoshow.getEndorsements()).append("\n");
         sb.append("Post count:  ").append(accounttoshow.getPost_count()).append("\n");
         return sb.toString();
@@ -147,8 +148,7 @@ public class SocialMedia implements SocialMediaPlatform {
 
 
         this.posts_list.add(post);
-//
-        account.getPosts().add(post); // one account can have many post
+        account.addPost(postId); // one account can have many post
         return postId;
     }
 
@@ -160,6 +160,7 @@ public class SocialMedia implements SocialMediaPlatform {
         // Loop through all posts to find matching one
         Post post_to_be_endorsed = null;
         for (Post p : posts_list) {
+
 
             if (p.getPost_id() == post_id) {
                 post_to_be_endorsed = p;
@@ -197,7 +198,7 @@ public class SocialMedia implements SocialMediaPlatform {
 
         //Social media and account should store the new post
         this.posts_list.add(endorsementPost);
-        endorsersaccount.getPosts().add(endorsementPost);
+        endorsersaccount.getListOfPostIDsInThisAccount().add(endorsementPost.getEndorsement_post_id());
 
         return newPostId;
     }
@@ -237,9 +238,11 @@ public class SocialMedia implements SocialMediaPlatform {
         int new_Post_id  = totalPostCount +1;
         totalPostCount++;
         // Create new commentPost object
-        CommentPost commentPost = new CommentPost(message,handle,new_Post_id,0,0,id);
-        this.posts_list.add(commentPost);
-        post.addCommentPostinPostList(commentPost);
+        CommentPost comment_post = new CommentPost(message,handle,new_Post_id,0,0,id);
+        post.addChild_post_id(new_Post_id);
+        post.increamentNo_of_comments_of_this_post();
+        comment_post.setParentpostid(id);
+        this.posts_list.add(comment_post);
 
         return new_Post_id;
 
@@ -250,51 +253,141 @@ public class SocialMedia implements SocialMediaPlatform {
 
     @Override
     public void deletePost(int id) throws PostIDNotRecognisedException {
-        Post post = null;
-        for(Post post1: posts_list){
-            if(post1.getPost_id() == id){
-                post = post1; //the post is set
+        //exceptions area starts + getting the post to be deleted
+        Post post_to_be_deleted = null;
+        for(Post post: posts_list){
+            if(post.getPost_id() == id){
+                post_to_be_deleted = post; //the post is set
             }
         }
         // Handle post exceptions
         // If post ID does not exist
-        if(post == null){
+        if(post_to_be_deleted == null){
             throw new PostIDNotRecognisedException("This post ID does not exist!");
         }
+        //exceptions area finished
+        //setting message as specification
+        post_to_be_deleted.setPost_message("The original content was removed from the system and is no longer available.");
+        //setting its child post to be null
+        post_to_be_deleted.setChild_post_id_to_be_null();
 
 
+        //---------setting the account -------------------------------------//
+        Account account_selected = null;
 
+        for (Account acc:accounts){
+            if(acc.getHandle().equals(post_to_be_deleted.getAccount_handle())){
+                account_selected=acc;
 
-        // Search for post with the matching post id, and replace with post is deleted message
+                List<Integer> list_postid_inThisAccount;
+                list_postid_inThisAccount = account_selected.getListOfPostIDsInThisAccount();
 
+                for (Integer ids:list_postid_inThisAccount){
+                      if(id == ids){
+                          acc.deletepostid(id);
+                          break;
+                      }
+                }
+                break;
+            }
+        }
+        int number_of_endorsement = account_selected.getEndorsements();
+        account_selected.setEndorsements(number_of_endorsement-1);
+        //deleteing the post with the postid in the postid list within an account
 
+        //handling the endorsement
 
 
     }
 
+
     @Override
-    public String showIndividualPost(int id) throws PostIDNotRecognisedException {
-        return null;
+    public String showIndividualPost (int id) throws PostIDNotRecognisedException {
+        Post post_to_show= null;
+        for(Post post:posts_list){
+            if (post.getPost_id() == id){
+                post_to_show = post;
+            }
+        }
+        if(post_to_show == null){
+            throw new PostIDNotRecognisedException("Post with id"+id+"is not found.");
+        }
+        StringBuilder Stringtoreturn = new StringBuilder();
+        Stringtoreturn.append("ID:").append(post_to_show.getPost_id()).append("\n");
+        Stringtoreturn.append("Account:").append(post_to_show.getAccount_handle()).append("\n");
+        Stringtoreturn.append("No. endorsements:").append(post_to_show.getNo_of_post_endorsements());
+        Stringtoreturn.append(" | No. comments:").append(post_to_show.getNo_of_comments_of_the_post()).append("\n");
+        Stringtoreturn.append("comment:").append(post_to_show.getPost_message());
+        return Stringtoreturn.toString();
     }
 
     @Override
     public StringBuilder showPostChildrenDetails(int id) throws PostIDNotRecognisedException, NotActionablePostException {
+        Post postchosen= null;
+        for(Post post1:posts_list){
+            if(post1.getPost_id()==id){
+                postchosen =post1;
+                break;
+            }
+        }
+        if(postchosen instanceof EndorsementPost){
+            throw new NotActionablePostException();
+        }
+        if (postchosen ==null){
+            throw new PostIDNotRecognisedException("Post ID:"+id+"is not in the list.");
+        }
+        System.out.println("the Child post");
+        System.out.println(showIndividualPost(postchosen.getChild_post_id()).get());
+        Integer nextpostid = postchosen.getChild_post_id();
+        for (Post post:posts_list){
+            if((post.getPost_id()==nextpostid)){
+                System.out.println("\t"+showIndividualPost(post.getPost_id()));
+                break;
+            }
+        }
+
+
+
         return null;
     }
 
     @Override
     public int getMostEndorsedPost() {
-        return 0;
+        // Loop through posts in arraylist
+        // Initialise attributes to store maxEndorsement and the most endorsedpost's ID
+        int maxEndorsements = 0;
+        int mostendorsedpostid = 0;
+        Post post = null;
+        for(Post find_mostendorsedpost: posts_list){
+            int numEndorsements = post.getNo_of_post_endorsements();
+            if(numEndorsements > maxEndorsements){
+                maxEndorsements = numEndorsements;
+                mostendorsedpostid = post.getPost_id();
+            }
+        }
+        return mostendorsedpostid;
     }
 
     @Override
     public int getMostEndorsedAccount() {
-        return 0;
+        int maxaccountendorsements = 0;
+        int mostendorsedaccountid = 0;
+        // Loop through all accounts and find the one with the most endorsements
+        for(Account accounts:accounts) {
+            int endorsements = accounts.getEndorsements();
+            if (endorsements > endorsements) {
+                mostendorsedaccountid = accounts.getId();
+            }
+        }
+        return mostendorsedaccountid;
     }
 
     @Override
     public void erasePlatform() {
-
+        accounts.clear();
+        posts_list.clear();
+        totalPostCount = 0;
+        idCounter = 0;
     }
 
     @Override
@@ -309,17 +402,48 @@ public class SocialMedia implements SocialMediaPlatform {
 
     @Override
     public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-        return 0;
+        for (Account account : accounts) {
+            if (account.getHandle().equals(handle)) {
+                throw new IllegalHandleException("Handle already exists!");
+            }
+        }
+        // Check for all other invalid input handles
+        if (handle == null || handle.isEmpty() || handle.length() > 30 || handle.contains(" ")) {
+            throw new InvalidHandleException("Invalid handle names. A handle should not have any whitespaces, be less than 30 characters in length and not be empty!");
+        }
+        // Create new account object and return ID of created account, once String handle passes exceptions
+
+        int newId = idCounter;
+        idCounter++;
+        Account newAccount = new Account(newId, handle);
+        accounts.add(newAccount);
+        return newId;
     }
 
     @Override
     public void removeAccount(String handle) throws HandleNotRecognisedException {
-
+        Account accountToRemove = null;
+        // Loop through every account in arrayList and check it matches input id parameter and remove if it matches
+        for (Account account : accounts)
+            if (account.getHandle() == handle) {
+                accountToRemove = account;
+                break;
+            }
+        if (accountToRemove == null) {
+            throw new HandleNotRecognisedException("Account with Handle: " + handle + "does not exist in the system");
+        }
+        accounts.remove(accountToRemove);
     }
 
     @Override
     public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
-
+        Account account = null;
+        for(Account acc: accounts){
+            if(account.getHandle() == handle){
+                account = acc;
+            }
+        }
+        account.setDescription(description);
     }
 
     @Override

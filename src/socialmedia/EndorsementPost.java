@@ -5,6 +5,7 @@ public class EndorsementPost extends Post {
     // post id
     // message
     private int endorsement_post_id;
+    private int parent_post_id;
 
     public int getEndorsement_post_id() {
         return endorsement_post_id;
