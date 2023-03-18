@@ -14,7 +14,7 @@ public class Post{
     private int no_of_post_endorsements;
     private int no_of_comments_in_the_post;
     private List<Integer> integerListofEndorsmentID = new ArrayList<>();
-    private List<Integer> child_post_id;
+    private List<Integer> child_post_id = new ArrayList<>();
 
 
 
@@ -73,6 +73,7 @@ public class Post{
     public String getPost_message() {
         return post_message;
     }
+
 
     public int getPost_id() {
         return post_id;

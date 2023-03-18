@@ -237,10 +237,13 @@ public class SocialMedia implements SocialMediaPlatform {
         // Assign new post id
         int new_Post_id  = totalPostCount +1;
         totalPostCount++;
+
         // Create new commentPost object
         CommentPost comment_post = new CommentPost(message,handle,new_Post_id,0,0,id);
+
         post.addChild_post_id(new_Post_id);
         post.increamentNo_of_comments_of_this_post();
+
         comment_post.setParentpostid(id);
         this.posts_list.add(comment_post);
 
@@ -324,6 +327,7 @@ public class SocialMedia implements SocialMediaPlatform {
     @Override
     public StringBuilder showPostChildrenDetails(int id) throws PostIDNotRecognisedException, NotActionablePostException {
         Post postchosen= null;
+        StringBuilder stringBuilder = new StringBuilder();
         for(Post post1:posts_list){
             if(post1.getPost_id()==id){
                 postchosen =post1;
@@ -337,14 +341,25 @@ public class SocialMedia implements SocialMediaPlatform {
             throw new PostIDNotRecognisedException("Post ID:"+id+"is not in the list.");
         }
         System.out.println("the Child post");
-        System.out.println(showIndividualPost(postchosen.getChild_post_id()).get());
-        Integer nextpostid = postchosen.getChild_post_id();
-        for (Post post:posts_list){
-            if((post.getPost_id()==nextpostid)){
-                System.out.println("\t"+showIndividualPost(post.getPost_id()));
+
+        System.out.println(showIndividualPost(postchosen.getChild_post_id().get(0)));
+
+        int childpostid = postchosen.getChild_post_id().get(0);
+
+        Post childpostchild = null;
+        for(Post post:posts_list){
+            if(post.getPost_id()==childpostid){
+                childpostchild = post;
                 break;
             }
         }
+
+        System.out.println(childpostchild.getChild_post_id().get(0));
+            
+
+        System.out.println(stringBuilder.toString());
+
+
 
 
 

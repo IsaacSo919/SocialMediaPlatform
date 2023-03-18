@@ -38,10 +38,10 @@ public class SocialMediaPlatformTestApp {
 			Integer id1 = platform.createAccount("my_handle");
 			Integer id2 = platform.createAccount("my_handle_2");
 			//create Post1 and Post2
-			int postID1 =platform.createPost("my_handle","POST 1 for handle: my_handle");
+//			int postID1 =platform.createPost("my_handle","POST 1 for handle: my_handle");
 			int postID2 = platform.createPost("my_handle","This is post 2");
 			//create endorse Post to the first post
-			int endorsedId = platform.endorsePost("my_handle_2",postID2);
+//			int endorsedId = platform.endorsePost("my_handle_2",postID2);
 			//create comment Post to the first post\\\
 			int commentpostID = platform.commentPost("my_handle_2", postID2, "OOPPPPPP");
 			int commentpostID2 = platform.commentPost("my_handle_2", commentpostID, "POSTID2:my_handle_2");

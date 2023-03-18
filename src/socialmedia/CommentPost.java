@@ -1,8 +1,10 @@
 package socialmedia;
 
+import java.util.List;
+
 public class CommentPost extends Post{
     private int parentpostid;
-    private int childpostid;
+
 
 
     public int getParentpostid() {
@@ -12,9 +14,6 @@ public class CommentPost extends Post{
         this.parentpostid = id;
     }
 
-    public int getChildpostid() {
-        return childpostid;
-    }
 
     public CommentPost(String post_message, String account_handle, int post_id, int likes, int no_of_post_endorsements, int parentpostid){
         super();
