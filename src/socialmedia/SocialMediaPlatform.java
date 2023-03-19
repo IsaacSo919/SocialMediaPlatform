@@ -15,6 +15,8 @@ public interface SocialMediaPlatform extends MiniSocialMediaPlatform {
 
 	// Account-related methods ****************************************
 
+	abstract Post returnPostById(Integer post_id) throws PostIDNotRecognisedException;
+
 	/**
 	 * The method creates an account in the platform with the given handle and
 	 * description.

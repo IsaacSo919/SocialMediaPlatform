@@ -1,7 +1,9 @@
 package socialmedia;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -316,14 +318,44 @@ public class SocialMedia implements SocialMediaPlatform {
             throw new PostIDNotRecognisedException("Post with id"+id+"is not found.");
         }
         StringBuilder Stringtoreturn = new StringBuilder();
-        Stringtoreturn.append("ID:").append(post_to_show.getPost_id()).append("\n");
-        Stringtoreturn.append("Account:").append(post_to_show.getAccount_handle()).append("\n");
-        Stringtoreturn.append("No. endorsements:").append(post_to_show.getNo_of_post_endorsements());
+        Stringtoreturn.append("\tID:").append(post_to_show.getPost_id()).append("\n");
+        Stringtoreturn.append("\tAccount:").append(post_to_show.getAccount_handle()).append("\n");
+        Stringtoreturn.append("\tNo. endorsements:").append(post_to_show.getNo_of_post_endorsements());
         Stringtoreturn.append(" | No. comments:").append(post_to_show.getNo_of_comments_of_the_post()).append("\n");
-        Stringtoreturn.append("comment:").append(post_to_show.getPost_message());
+        Stringtoreturn.append("\tcomment:").append(post_to_show.getPost_message());
         return Stringtoreturn.toString();
     }
 
+    public Post returnPostById (Integer post_id) throws PostIDNotRecognisedException{
+        Post postReturn = null;
+        for (Post post:posts_list){
+            if(post.getPost_id()==post_id){
+                postReturn = post;
+                return postReturn;
+            }
+        }
+        if(postReturn == null){
+            throw new PostIDNotRecognisedException("Post with id"+post_id+"is not found.");
+        }
+        return postReturn;
+    }
+
+    public StringBuilder findNode(Post node) throws PostIDNotRecognisedException {
+        StringBuilder stringBuilder = new StringBuilder();
+        Deque<Post> stack = new ArrayDeque<>();
+        stack.push(node);
+        while (!stack.isEmpty()) {
+            Post n = stack.pop();
+            for (Integer child : n.getChild_post_id()){
+                stack.push(returnPostById(child));
+                stringBuilder.append("\t"+showIndividualPost(child)+"\n");
+            }
+            if(stack.isEmpty()){
+                return stringBuilder;
+            }
+        }
+        return stringBuilder;
+    }
     @Override
     public StringBuilder showPostChildrenDetails(int id) throws PostIDNotRecognisedException, NotActionablePostException {
         Post postchosen= null;
@@ -340,26 +372,9 @@ public class SocialMedia implements SocialMediaPlatform {
         if (postchosen ==null){
             throw new PostIDNotRecognisedException("Post ID:"+id+"is not in the list.");
         }
-        System.out.println("the Child post");
 
-        System.out.println(showIndividualPost(postchosen.getChild_post_id().get(0)));
-
-        int childpostid = postchosen.getChild_post_id().get(0);
-
-        Post childpostchild = null;
-        for(Post post:posts_list){
-            if(post.getPost_id()==childpostid){
-                childpostchild = post;
-                break;
-            }
-        }
-
-        System.out.println(childpostchild.getChild_post_id().get(0));
-            
-
+       stringBuilder = findNode(postchosen);
         System.out.println(stringBuilder.toString());
-
-
 
 
 
