@@ -317,15 +317,15 @@ public class SocialMedia implements SocialMediaPlatform {
         if(post_to_show == null){
             throw new PostIDNotRecognisedException("Post with id"+id+"is not found.");
         }
+
         StringBuilder Stringtoreturn = new StringBuilder();
-        Stringtoreturn.append("\tID:").append(post_to_show.getPost_id()).append("\n");
-        Stringtoreturn.append("\tAccount:").append(post_to_show.getAccount_handle()).append("\n");
-        Stringtoreturn.append("\tNo. endorsements:").append(post_to_show.getNo_of_post_endorsements());
-        Stringtoreturn.append(" | No. comments:").append(post_to_show.getNo_of_comments_of_the_post()).append("\n");
-        Stringtoreturn.append("\tcomment:").append(post_to_show.getPost_message());
+
+        Stringtoreturn.append( "ID:").append(post_to_show.getPost_id()).append("\n");
+        Stringtoreturn.append("Account:").append(post_to_show.getAccount_handle()).append("\n");
+        Stringtoreturn.append("No. endorsements:").append(post_to_show.getNo_of_post_endorsements()).append(" | No. comments:").append(post_to_show.getNo_of_comments_of_the_post()).append("\n");
+        Stringtoreturn.append("comment:").append(post_to_show.getPost_message());
         return Stringtoreturn.toString();
     }
-
     public Post returnPostById (Integer post_id) throws PostIDNotRecognisedException{
         Post postReturn = null;
         for (Post post:posts_list){
@@ -339,27 +339,78 @@ public class SocialMedia implements SocialMediaPlatform {
         }
         return postReturn;
     }
+    private boolean firsttimegetdetails= true;
+    public StringBuilder getdetails(Post post_to_show, int level,boolean is_last_child) throws PostIDNotRecognisedException {
+        StringBuilder stringtoreturn = new StringBuilder();
+        String padding = getPaddingByLevel(level);
+        String paddingminus1 = getPaddingByLevel(level-1);
 
-    public StringBuilder findNode(Post node) throws PostIDNotRecognisedException {
-        StringBuilder stringBuilder = new StringBuilder();
-        Deque<Post> stack = new ArrayDeque<>();
-        stack.push(node);
-        while (!stack.isEmpty()) {
-            Post n = stack.pop();
-            for (Integer child : n.getChild_post_id()){
-                stack.push(returnPostById(child));
-                stringBuilder.append("\t"+showIndividualPost(child)+"\n");
+        if(firsttimegetdetails == true){
+            stringtoreturn.append(showIndividualPost(post_to_show.getPost_id()));
+            stringtoreturn.append("\n|\n");
+
+        }
+        else{
+
+            stringtoreturn.append(paddingminus1 +"| >");
+            stringtoreturn.append("ID:").append(post_to_show.getPost_id()).append("\n");
+            stringtoreturn.append(padding +  "Account:").append(post_to_show.getAccount_handle()).append("\n");
+            stringtoreturn.append(padding + "No. endorsements:").append(post_to_show.getNo_of_post_endorsements()).append(" " +
+                    "| No. comments:").append(post_to_show.getNo_of_comments_of_the_post()).append("\n");
+            stringtoreturn.append(padding  + "comment:"+post_to_show.getPost_message());
+
+
+            if(is_last_child != true){// when it is not the last child
+                stringtoreturn.append("\n"+padding+"|"+"\n");
             }
-            if(stack.isEmpty()){
-                return stringBuilder;
+            else {
+                stringtoreturn.append("\n");
+            }
+
+
+
+        }
+
+        firsttimegetdetails = false;
+        return stringtoreturn;
+    }
+
+    public String getPaddingByLevel(int level) {
+        // helper function to add space to the front of the string
+        String padding = "";
+        for (int i = 0; i < level; i++) {
+            padding = padding + "\t";
+        }
+        return padding;
+    }
+
+
+    StringBuilder recursiveStringbuilder = new StringBuilder();
+    public void dfsRecursive(int currentNode, int level, boolean is_last_child) throws PostIDNotRecognisedException {
+
+        Post post = returnPostById(currentNode);
+
+        List<Integer> neighbors = returnPostById(currentNode).getChild_post_id();
+
+
+        if (neighbors != null) {
+            recursiveStringbuilder.append(getdetails(post, level,is_last_child));
+            for (int i = 0; i < neighbors.size(); i++) {
+                int node = neighbors.get(i);
+                if(i == (neighbors.size() - 1)){
+                    is_last_child = true;
+                }
+                dfsRecursive(node, level + 1, is_last_child);
+
+
             }
         }
-        return stringBuilder;
     }
+
+
     @Override
     public StringBuilder showPostChildrenDetails(int id) throws PostIDNotRecognisedException, NotActionablePostException {
         Post postchosen= null;
-        StringBuilder stringBuilder = new StringBuilder();
         for(Post post1:posts_list){
             if(post1.getPost_id()==id){
                 postchosen =post1;
@@ -372,13 +423,13 @@ public class SocialMedia implements SocialMediaPlatform {
         if (postchosen ==null){
             throw new PostIDNotRecognisedException("Post ID:"+id+"is not in the list.");
         }
-
-       stringBuilder = findNode(postchosen);
-        System.out.println(stringBuilder.toString());
+        dfsRecursive(id,0,false);
 
 
 
-        return null;
+
+
+        return recursiveStringbuilder;
     }
 
     @Override

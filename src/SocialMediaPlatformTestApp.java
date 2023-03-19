@@ -35,18 +35,27 @@ public class SocialMediaPlatformTestApp {
 
 		try {
 			//create accounts
-			Integer id1 = platform.createAccount("my_handle");
+			Integer id1 = platform.createAccount("my_handle_1");
 			Integer id2 = platform.createAccount("my_handle_2");
+			Integer id3 = platform.createAccount("my_handle_3");
+			Integer id4 = platform.createAccount("my_handle_4");
+			Integer id5 = platform.createAccount("my_handle_5");
 			//create Post1 and Post2
-//			int postID1 =platform.createPost("my_handle","POST 1 for handle: my_handle");
-			int postID2 = platform.createPost("my_handle","This is post 2");
+
+			int postID1 = platform.createPost("my_handle_1","I like examples.");
 			//create endorse Post to the first post
 //			int endorsedId = platform.endorsePost("my_handle_2",postID2);
 			//create comment Post to the first post\\\
-			int commentpostID = platform.commentPost("my_handle_2", postID2, "OOPPPPPP");
-			int commentpostID2 = platform.commentPost("my_handle_2", commentpostID, "POSTID2:my_handle_2");
-
-			platform.showPostChildrenDetails(postID2);
+			int postID2 = platform.createPost("my_handle_2","POST 2 for handle: my_handle");
+			int commentpostID3 = platform.commentPost("my_handle_2", postID1, "No more than me...");
+			int commentpostID4 = platform.commentPost("my_handle_3", postID1, "Can't you do better than this?");
+			int commentpostID5 = platform.commentPost("my_handle_1", commentpostID3, "I can prove!");
+			int commentpostID6 = platform.commentPost("my_handle_2", commentpostID5 , "Prove it");
+			int commentpostID7 = platform.commentPost("my_handle_5", postID1 , "Where is the example?");
+			int endosementpostID8 = platform.endorsePost("my_handle_4",postID2);
+			int endosementpostID9 = platform.endorsePost("my_handle_5",postID1);
+			int endosementpostID10 = platform.commentPost("my_handle_1",commentpostID7,"This is the example!");
+			System.out.println(platform.showPostChildrenDetails(postID1));
 
 //			//printing after comment
 //			System.out.println("postID:"+postID);
