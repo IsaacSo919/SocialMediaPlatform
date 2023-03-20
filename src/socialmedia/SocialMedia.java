@@ -339,6 +339,16 @@ public class SocialMedia implements SocialMediaPlatform {
         }
         return postReturn;
     }
+
+
+    public String getPaddingByLevel(int level) {
+        // helper function to add space to the front of the string
+        String padding = "";
+        for (int i = 0; i < level; i++) {
+            padding = padding + "\t";
+        }
+        return padding;
+    }
     private boolean firsttimegetdetails= true;
     public StringBuilder getdetails(Post post_to_show, int level,boolean is_last_child) throws PostIDNotRecognisedException {
         StringBuilder stringtoreturn = new StringBuilder();
@@ -348,6 +358,7 @@ public class SocialMedia implements SocialMediaPlatform {
         if(firsttimegetdetails == true){
             stringtoreturn.append(showIndividualPost(post_to_show.getPost_id()));
             stringtoreturn.append("\n|\n");
+            firsttimegetdetails = false;
 
         }
         else{
@@ -366,27 +377,12 @@ public class SocialMedia implements SocialMediaPlatform {
             else {
                 stringtoreturn.append("\n");
             }
-
-
-
         }
-
         firsttimegetdetails = false;
         return stringtoreturn;
     }
-
-    public String getPaddingByLevel(int level) {
-        // helper function to add space to the front of the string
-        String padding = "";
-        for (int i = 0; i < level; i++) {
-            padding = padding + "\t";
-        }
-        return padding;
-    }
-
-
     StringBuilder recursiveStringbuilder = new StringBuilder();
-    public void dfsRecursive(int currentNode, int level, boolean is_last_child) throws PostIDNotRecognisedException {
+    public boolean dfsRecursive(int currentNode, int level, boolean is_last_child) throws PostIDNotRecognisedException {
 
         Post post = returnPostById(currentNode);
 
@@ -394,17 +390,22 @@ public class SocialMedia implements SocialMediaPlatform {
 
 
         if (neighbors != null) {
+
+
             recursiveStringbuilder.append(getdetails(post, level,is_last_child));
             for (int i = 0; i < neighbors.size(); i++) {
                 int node = neighbors.get(i);
-                if(i == (neighbors.size() - 1)){
+
+                if(i == (neighbors.size())){
                     is_last_child = true;
+
                 }
                 dfsRecursive(node, level + 1, is_last_child);
 
 
             }
         }
+    return false;
     }
 
 
@@ -424,11 +425,6 @@ public class SocialMedia implements SocialMediaPlatform {
             throw new PostIDNotRecognisedException("Post ID:"+id+"is not in the list.");
         }
         dfsRecursive(id,0,false);
-
-
-
-
-
         return recursiveStringbuilder;
     }
 
