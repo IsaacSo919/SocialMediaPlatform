@@ -55,7 +55,7 @@ public class SocialMediaPlatformTestApp {
 			int endosementpostID8 = platform.endorsePost("my_handle_4",postID2);
 			int endosementpostID9 = platform.endorsePost("my_handle_5",postID1);
 			int endosementpostID10 = platform.commentPost("my_handle_1",commentpostID7,"This is the example!");
-			System.out.println(platform.showPostChildrenDetails(postID1));
+//			System.out.println(platform.showPostChildrenDetails(postID1));
 
 //			//printing after comment
 //			System.out.println("postID:"+postID);
@@ -71,7 +71,10 @@ public class SocialMediaPlatformTestApp {
 //			}
 
 //			//deleting the first post
-//			platform.deletePost(postID);
+			System.out.println("TotalOriginalPost before deletion:"+platform.getTotalOriginalPosts());
+			platform.deletePost(commentpostID4);
+			System.out.println("TotalOriginalPost after deletion:"+platform.getTotalOriginalPosts());
+
 //			//show individual post
 //			System.out.println(platform.showIndividualPost(postID2));
 

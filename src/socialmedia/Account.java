@@ -108,7 +108,7 @@ public class Account {
     public void deletepostid(int id){
         for (Integer id_in_list: list_of_postIDs_in_this_account)
             if (id_in_list==id){
-                list_of_postIDs_in_this_account.remove(id_in_list);
+                id_in_list= null;
 
             }
     }

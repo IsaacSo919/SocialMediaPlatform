@@ -20,13 +20,14 @@ public class SocialMedia implements SocialMediaPlatform {
     public List<Post> posts_list = new ArrayList<>(); // remove static
 
     public int totalPostCount = 0;
+    public int endorsepostcount = 0;
 
     public List<Account> getAccounts() {
         return accounts;
     }
 
     private static int idCounter = 0;
-    private static int post_id = 0;
+    private static int originalPostCount = 0;
 
     public SocialMedia() {
 
@@ -150,7 +151,8 @@ public class SocialMedia implements SocialMediaPlatform {
 
 
         this.posts_list.add(post);
-        account.addPost(postId); // one account can have many post
+        account.addPost(postId);// one account can have many post
+        originalPostCount++;
         return postId;
     }
 
@@ -192,6 +194,7 @@ public class SocialMedia implements SocialMediaPlatform {
         // Create a new post
         int newPostId = totalPostCount + 1;
         totalPostCount++;
+        endorsepostcount++;
         /* <p>
 	 * <code>"EP@" + [endorsed account handle] + ": " + [endorsed message]</code>
 	 /* <p>*/
@@ -298,6 +301,12 @@ public class SocialMedia implements SocialMediaPlatform {
         }
         int number_of_endorsement = account_selected.getEndorsements();
         account_selected.setEndorsements(number_of_endorsement-1);
+        totalPostCount--;
+        if ((post_to_be_deleted instanceof Post) && !(post_to_be_deleted instanceof CommentPost) && !(post_to_be_deleted instanceof EndorsementPost)) {
+            originalPostCount--;
+        }
+
+
         //deleteing the post with the postid in the postid list within an account
 
         //handling the endorsement
@@ -530,7 +539,7 @@ public class SocialMedia implements SocialMediaPlatform {
 
     @Override
     public int getTotalOriginalPosts() {
-        return 0;
+        return originalPostCount;
     }
 
     @Override
