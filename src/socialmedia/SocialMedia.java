@@ -1,9 +1,8 @@
 package socialmedia;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
+
 import java.util.List;
 
 /**
@@ -61,6 +60,7 @@ public class SocialMedia implements SocialMediaPlatform {
         // Creates new account object and is set to null
         Account accountToRemove = null;
         // Loop through every account in arrayList and check it matches input id parameter and remove if it matches
+
         for (Account account : accounts)
             if (account.getId() == newId) {
                 accountToRemove = account;
@@ -234,7 +234,8 @@ public class SocialMedia implements SocialMediaPlatform {
             throw new PostIDNotRecognisedException("This post ID does not exist!");
         }
         // If post message is invalid
-        if(post.getPost_message() == " " || post.getPost_message().length() > 100){
+        System.out.println("post.getPost_message():"+post.getPost_message());
+        if(message.isEmpty() || message.length() > 100){
             throw new InvalidPostException("This is not a valid post message");
         }
         // Non actionable?
