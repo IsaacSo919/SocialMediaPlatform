@@ -343,46 +343,44 @@ public class SocialMedia implements SocialMediaPlatform {
 
     public String getPaddingByLevel(int level) {
         // helper function to add space to the front of the string
-        String padding = "";
-        for (int i = 0; i < level; i++) {
-            padding = padding + "\t";
+//        level += 1;
+        if(level == -1){
+            return "";
         }
-        return padding;
+        String padding = "\t";
+        return padding.repeat(level);
+//        return padding;
     }
     private boolean firsttimegetdetails= true;
-    public StringBuilder getdetails(Post post_to_show, int level,boolean is_last_child) throws PostIDNotRecognisedException {
+    public StringBuilder getdetails(Post post_to_show, int level,boolean is_first_child) throws PostIDNotRecognisedException {
         StringBuilder stringtoreturn = new StringBuilder();
         String padding = getPaddingByLevel(level);
         String paddingminus1 = getPaddingByLevel(level-1);
 
         if(firsttimegetdetails == true){
             stringtoreturn.append(showIndividualPost(post_to_show.getPost_id()));
-            stringtoreturn.append("\n|\n");
+            stringtoreturn.append("\n");
             firsttimegetdetails = false;
 
         }
         else{
-
-            stringtoreturn.append(paddingminus1 +"| >");
+            if(is_first_child){
+                stringtoreturn.append(paddingminus1+"|").append("\n");
+            }
+            stringtoreturn.append(paddingminus1 +"| > ");
             stringtoreturn.append("ID:").append(post_to_show.getPost_id()).append("\n");
             stringtoreturn.append(padding +  "Account:").append(post_to_show.getAccount_handle()).append("\n");
             stringtoreturn.append(padding + "No. endorsements:").append(post_to_show.getNo_of_post_endorsements()).append(" " +
                     "| No. comments:").append(post_to_show.getNo_of_comments_of_the_post()).append("\n");
             stringtoreturn.append(padding  + "comment:"+post_to_show.getPost_message());
 
-
-            if(is_last_child != true){// when it is not the last child
-                stringtoreturn.append("\n"+padding+"|"+"\n");
-            }
-            else {
-                stringtoreturn.append("\n");
-            }
+            stringtoreturn.append("\n");
         }
         firsttimegetdetails = false;
         return stringtoreturn;
     }
     StringBuilder recursiveStringbuilder = new StringBuilder();
-    public boolean dfsRecursive(int currentNode, int level, boolean is_last_child) throws PostIDNotRecognisedException {
+    public boolean dfsRecursive(int currentNode, int level, boolean is_first_child) throws PostIDNotRecognisedException {
 
         Post post = returnPostById(currentNode);
 
@@ -392,15 +390,17 @@ public class SocialMedia implements SocialMediaPlatform {
         if (neighbors != null) {
 
 
-            recursiveStringbuilder.append(getdetails(post, level,is_last_child));
+            recursiveStringbuilder.append(getdetails(post, level,is_first_child));
             for (int i = 0; i < neighbors.size(); i++) {
                 int node = neighbors.get(i);
-
-                if(i == (neighbors.size())){
-                    is_last_child = true;
-
+                if (i==0){
+                    is_first_child=true;
+                }else{
+                    is_first_child=false;
                 }
-                dfsRecursive(node, level + 1, is_last_child);
+
+
+                dfsRecursive(node, level + 1, is_first_child);
 
 
             }
