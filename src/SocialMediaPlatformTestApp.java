@@ -40,12 +40,22 @@ public class SocialMediaPlatformTestApp {
 			Integer id3 = platform.createAccount("my_handle_3");
 			Integer id4 = platform.createAccount("my_handle_4");
 			Integer id5 = platform.createAccount("my_handle_5");
-			//create Post1 and Post2
 
+//			//-------------------------------------------------------------------------------------------------------
+//			//error post message >100 characters
+//			StringBuilder sb = new StringBuilder();
+//			String repeatedStr = "abcde";
+//			int repeatCount = 25;
+//
+//			for (int i = 0; i < repeatCount; i++) {
+//				sb.append(repeatedStr);
+//			}
+//			String commentpostmessage = sb.toString();
+
+//			//-------------------------------------------------------------------------------------------------------
+
+			//create Post
 			int postID1 = platform.createPost("my_handle_1","I like examples.");
-			//create endorse Post to the first post
-//			int endorsedId = platform.endorsePost("my_handle_2",postID2);
-			//create comment Post to the first post\\\
 			int postID2 = platform.createPost("my_handle_2","POST 2 for handle: my_handle");
 			int commentpostID3 = platform.commentPost("my_handle_2", postID1, "No more than me...");
 			int commentpostID4 = platform.commentPost("my_handle_3", postID1, "Can't you do better than this?");
@@ -55,9 +65,12 @@ public class SocialMediaPlatformTestApp {
 			int endosementpostID8 = platform.endorsePost("my_handle_4",postID2);
 			int endosementpostID9 = platform.endorsePost("my_handle_5",postID1);
 			int endosementpostID10 = platform.commentPost("my_handle_1",commentpostID7,"This is the example!");
+			//File IO//
+			platform.savePlatform("");
+			//showPostChildrenDetails
 //			System.out.println(platform.showPostChildrenDetails(postID1));
 
-//			//printing after comment
+//			//printing after commenting
 //			System.out.println("postID:"+postID);
 //			for (Post post : ((SocialMedia) platform).posts_list){
 //				if (post.getPost_id() == commentpostID){
@@ -71,22 +84,20 @@ public class SocialMediaPlatformTestApp {
 //			}
 
 //			//deleting the first post
-			System.out.println("TotalOriginalPost before deletion:"+platform.getTotalOriginalPosts());
-			platform.deletePost(commentpostID4);
-			System.out.println("TotalOriginalPost after deletion:"+platform.getTotalOriginalPosts());
+//			System.out.println("TotalOriginalPost before deletion:"+platform.getTotalOriginalPosts());
+//			platform.deletePost(commentpostID4);
+//			System.out.println("TotalOriginalPost after deletion:"+platform.getTotalOriginalPosts());
 
 //			//show individual post
 //			System.out.println(platform.showIndividualPost(postID2));
 
-			////printing the list of an account
+			////printing all accounts
 //			for (Account acc:((SocialMedia) platform).getAccounts()){
 //				if(acc.getHandle()=="my_handle"){
 //					System.out.println("Post list of this account"+acc.getListOfPostIDsInThisAccount());
 //				}
 //			}
 
-
-//			Post post_delete = new Post();
 //			//printing after deleteing - post and account
 //			for (Post post : ((SocialMedia) platform).posts_list){
 //				if (post.getPost_id() == postID){
@@ -118,14 +129,11 @@ public class SocialMediaPlatformTestApp {
 //					System.out.println("endorsmentId: "+ endormentId);
 //				}
 //			}
-
-
-
 			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";
-			//System.out.println(platform.getNumberOfAccounts());
-			platform.removeAccount(1);
+
 			assert (platform.getNumberOfAccounts() == 0) : "number of accounts registered in the system does not match";
 			//System.out.println(platform.getNumberOfAccounts());
+			platform.removeAccount(100);
 		} catch (IllegalHandleException e) {
 			assert (false) : "IllegalHandleException thrown incorrectly";
 		} catch (InvalidHandleException e) {
