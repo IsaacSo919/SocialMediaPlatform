@@ -1,5 +1,6 @@
 import socialmedia.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class SocialMediaPlatformTestApp {
 			int endosementpostID9 = platform.endorsePost("my_handle_5",postID1);
 			int endosementpostID10 = platform.commentPost("my_handle_1",commentpostID7,"This is the example!");
 			//File IO//
-			platform.savePlatform("");
+			platform.savePlatform("filename");
 			//showPostChildrenDetails
 //			System.out.println(platform.showPostChildrenDetails(postID1));
 
@@ -147,6 +148,8 @@ public class SocialMediaPlatformTestApp {
 		}catch (PostIDNotRecognisedException e){
 			assert(false) : "PostIDNotRecognisedException thrown incorrectly";
 		} catch (NotActionablePostException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 

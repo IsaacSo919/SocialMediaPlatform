@@ -509,7 +509,7 @@ public class SocialMedia implements SocialMediaPlatform {
         try {
             accountArrayList = (ArrayList<Account>) objectIn.readObject();
             postArrayList = (ArrayList<Post>) objectIn.readObject();
-            obj = objectIn.readObject();
+//            obj = objectIn.readObject();
         } catch (ClassNotFoundException e) {
             // Handle the exception
             System.err.println("An error occurred while loading the platform: " + e.getMessage());
@@ -578,11 +578,25 @@ public class SocialMedia implements SocialMediaPlatform {
 
     @Override
     public int getTotalEndorsmentPosts() {
-        return 0;
+        // To count endorsement posts
+        int countendorsements = 0;
+        for(Post post:postArrayList){
+            if (post instanceof EndorsementPost){
+                countendorsements ++;
+            }
+        }
+        return countendorsements;
     }
 
     @Override
     public int getTotalCommentPosts() {
-        return 0;
+        // int var to store comment count
+        int commentcount = 0;
+        for(Post post:postArrayList){
+            if(post instanceof CommentPost){
+                commentcount++;
+            }
+        }
+        return commentcount;
     }
 }

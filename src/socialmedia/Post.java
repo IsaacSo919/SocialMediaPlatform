@@ -1,11 +1,12 @@
 package socialmedia;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Deque;
 
-public class Post{
+public class Post implements Serializable {
 
     private String account_handle;
     //private int post_count;
