@@ -41,6 +41,7 @@ public class SocialMediaPlatformTestApp {
 			Integer id3 = platform.createAccount("my_handle_3");
 			Integer id4 = platform.createAccount("my_handle_4");
 			Integer id5 = platform.createAccount("my_handle_5");
+//			System.out.println(platform.showAccount("my_handle_1"));
 
 //			//-------------------------------------------------------------------------------------------------------
 //			//error post message >100 characters
@@ -68,6 +69,8 @@ public class SocialMediaPlatformTestApp {
 			int endosementpostID10 = platform.commentPost("my_handle_1",commentpostID7,"This is the example!");
 			//File IO//
 			platform.savePlatform("filename");
+
+
 			//showPostChildrenDetails
 //			System.out.println(platform.showPostChildrenDetails(postID1));
 

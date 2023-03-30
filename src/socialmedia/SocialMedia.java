@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * BadMiniSocialMedia is a minimally compiling, but non-functioning implementor
@@ -42,22 +43,26 @@ public class SocialMedia implements SocialMediaPlatform {
     public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
         // TODO Auto-generated method
         // Loop through every account that exists in the arraylist and check whether the new handle already exists
-        for (Account account : accountArrayList) {
-            if (account.getHandle().equals(handle)) {
-                throw new IllegalHandleException("Handle already exists!");
-            }
-        }
-        // Check for all other invalid input handles
-        if (handle == null || handle.isEmpty() || handle.length() > 30 || handle.contains(" ")) {
-            throw new IllegalHandleException("Invalid handle names. A handle should not have any whitespaces, be less than 30 characters in length and not be empty!");
-        }
-        // Create new account object and return ID of created account, once String handle passes exceptions
 
-        int newId = idCounter;
-        idCounter++;
-        Account newAccount = new Account(newId, handle);
-        accountArrayList.add(newAccount);
-        return newId;
+            System.out.println("Account with" + handle + "is created");
+            for (Account account : accountArrayList) {
+                if (account.getHandle().equals(handle)) {
+
+                    throw new IllegalHandleException("Handle already exists!");
+                }
+            }
+            // Check for all other invalid input handles
+            if (handle == null || handle.isEmpty() || handle.length() > 30 || handle.contains(" ")) {
+                throw new IllegalHandleException("Invalid handle names. A handle should not have any whitespaces, be less than 30 characters in length and not be empty!");
+            }
+            // Create new account object and return ID of created account, once String handle passes exceptions
+            int newId = idCounter;
+            idCounter++;
+            Account newAccount = new Account(newId, handle);
+            accountArrayList.add(newAccount);
+            assert accountArrayList.contains(newAccount): "Account creation failed";
+            return newId;
+
     }
 
 
@@ -76,6 +81,7 @@ public class SocialMedia implements SocialMediaPlatform {
             throw new AccountIDNotRecognisedException("Account with ID" + newId + "Does not exist in the system ");
         }
         accountArrayList.remove(accountToRemove);
+
     }
 
     @Override
@@ -106,6 +112,7 @@ public class SocialMedia implements SocialMediaPlatform {
 
     @Override
     public String showAccount(String handle) throws HandleNotRecognisedException {
+        System.out.println(accountArrayList);
         Account accounttoshow = null;
         // Loop through accounts arrayList and find matching handle
         for (Account acc : accountArrayList) {
@@ -169,18 +176,14 @@ public class SocialMedia implements SocialMediaPlatform {
         // Loop through all posts to find matching one
         Post post_to_be_endorsed = null;
         for (Post p : postArrayList) {
-
-
             if (p.getPost_id() == post_id) {
                 post_to_be_endorsed = p;
                 break;
             }
         }
-        if (post_to_be_endorsed == null){
-            throw new PostIDNotRecognisedException("This ID has not been recognised");
+        if (post_to_be_endorsed instanceof EndorsementPost) {
+            throw new NotActionablePostException("An Endorsed Post couldn't be endorsed");
         }
-
-
         // Find endorsers account String handle
         Account endorsersaccount = null;
         for (Account acc : accountArrayList) {
@@ -191,11 +194,9 @@ public class SocialMedia implements SocialMediaPlatform {
             }
         }
         if (endorsersaccount == null) {
+            assert (false):"The account of this Post doesn't exist.";
             throw new HandleNotRecognisedException("Account with handle" + handle + "does not exist");
-
         }
-
-
         // Create a new post
         int newPostId = totalPostCount + 1;
         totalPostCount++;
@@ -233,7 +234,11 @@ public class SocialMedia implements SocialMediaPlatform {
                 post = findid;
             }
         }
-        // Handle post exceptions
+        if (post instanceof EndorsementPost) {
+            throw new NotActionablePostException("An comment Post cannot be endorsed.");
+        }
+
+            // Handle post exceptions
         // If post ID does not exist
         if(post == null){
             throw new PostIDNotRecognisedException("This post ID does not exist!");
@@ -334,9 +339,7 @@ public class SocialMedia implements SocialMediaPlatform {
         if(post_to_show == null){
             throw new PostIDNotRecognisedException("Post with id"+id+"is not found.");
         }
-
         StringBuilder Stringtoreturn = new StringBuilder();
-
         Stringtoreturn.append( "ID:").append(post_to_show.getPost_id()).append("\n");
         Stringtoreturn.append("Account:").append(post_to_show.getAccount_handle()).append("\n");
         Stringtoreturn.append("No. endorsements:").append(post_to_show.getNo_of_post_endorsements()).append(" | No. comments:").append(post_to_show.getNo_of_comments_of_the_post()).append("\n");
@@ -378,7 +381,6 @@ public class SocialMedia implements SocialMediaPlatform {
             stringtoreturn.append(showIndividualPost(post_to_show.getPost_id()));
             stringtoreturn.append("\n");
             firsttimegetdetails = false;
-
         }
         else{
             if(is_first_child){
@@ -439,6 +441,7 @@ public class SocialMedia implements SocialMediaPlatform {
             throw new NotActionablePostException();
         }
         if (postchosen ==null){
+            assert(false):"The post id doesn't exist in the list";
             throw new PostIDNotRecognisedException("Post ID:"+id+"is not in the list.");
         }
         dfsRecursive(id,0,false);
@@ -491,17 +494,11 @@ public class SocialMedia implements SocialMediaPlatform {
         try {
             objectOut.writeObject(accountArrayList);
             objectOut.writeObject(postArrayList);
-        } catch (IOException e) {
-            // Handle the exception
-            System.err.println("file with filename"+filename+"is not found");
-            e.printStackTrace();
-        } finally {
+        }finally {
             objectOut.close();
             fileOut.close();
         }
     }
-
-
     @Override
     public void loadPlatform(String filename) throws IOException, ClassNotFoundException {
         FileInputStream fileIn = new FileInputStream(filename);
@@ -509,11 +506,6 @@ public class SocialMedia implements SocialMediaPlatform {
         try {
             accountArrayList = (ArrayList<Account>) objectIn.readObject();
             postArrayList = (ArrayList<Post>) objectIn.readObject();
-//            obj = objectIn.readObject();
-        } catch (ClassNotFoundException e) {
-            // Handle the exception
-            System.err.println("An error occurred while loading the platform: " + e.getMessage());
-            e.printStackTrace();
         } finally {
             objectIn.close();
             fileIn.close();
